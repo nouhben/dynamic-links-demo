@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deep_link_social_share/models/post.dart';
-import 'package:flutter/material.dart';
 
 class FirestoreService {
   FirestoreService({required this.uid});
@@ -8,12 +7,9 @@ class FirestoreService {
   final _posts = FirebaseFirestore.instance.collection('posts');
   Future<void> createPost({required Post post}) async {
     try {
-      final ref = FirebaseFirestore.instance.doc('posts/$uid');
-      //_posts.add(post.toMap());
-      ref.set(post.toMap());
-      // _posts.doc(uid).collection('myPosts').add(post.toMap()).then(
-      //       (value) => print(value.id),
-      //     );
+      //final ref = FirebaseFirestore.instance.doc('posts/$uid');
+      _posts.add(post.toMap());
+      //ref.set(post.toMap());
     } catch (e) {
       print(e.toString());
     }

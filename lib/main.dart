@@ -3,11 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:deep_link_social_share/models/my_user.dart';
-import 'package:deep_link_social_share/screens/home_screen.dart';
-import 'package:deep_link_social_share/services/post_card.dart';
-
-import 'models/post.dart';
 import 'screens/auth_wdiget_builder.dart';
 import 'screens/auth_widget.dart';
 import 'services/dynamic_links_service.dart';
@@ -28,22 +23,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<FirebaseAuthService>(
       create: (context) => FirebaseAuthService(),
-      child: AuthWidgetBuilder(
-        builder: (context, snapshot) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.dark,
-            child: MaterialApp(
-              title: 'Flutter Demo',
-              theme: ThemeData(
-                primarySwatch: Colors.indigo,
-              ),
-              themeMode: ThemeMode.dark,
-              darkTheme: ThemeData.dark(),
-              debugShowCheckedModeBanner: false,
-              home: InitialWidget(snapshot: snapshot),
-            ),
-          );
-        },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: MaterialApp(
+          title: 'Flutter Dynamic Linking Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.indigo,
+          ),
+          themeMode: ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          home: const InitialWidget(),
+        ),
       ),
     );
   }
@@ -52,21 +42,20 @@ class MyApp extends StatelessWidget {
 class InitialWidget extends StatefulWidget {
   const InitialWidget({
     Key? key,
-    required this.snapshot,
   }) : super(key: key);
-  final AsyncSnapshot<MyUser?> snapshot;
-
   @override
   State<InitialWidget> createState() => _InitialWidgetState();
 }
 
 class _InitialWidgetState extends State<InitialWidget> {
   late DynamicLinkService _service;
+  bool isOpenedFromDynamicLink = false;
+
   @override
   void initState() {
     super.initState();
     _service = DynamicLinkService();
-    Future.delayed(const Duration(milliseconds: 100)).then(
+    Future.delayed(const Duration(milliseconds: 1)).then(
       (value) => handle(),
     );
   }
@@ -82,6 +71,8 @@ class _InitialWidgetState extends State<InitialWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthWidget(userSnapshot: widget.snapshot);
+    return AuthWidgetBuilder(
+      builder: (context, snapshot) => AuthWidget(userSnapshot: snapshot),
+    );
   }
 }

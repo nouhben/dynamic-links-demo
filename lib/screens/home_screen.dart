@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:deep_link_social_share/models/my_user.dart';
 import 'package:deep_link_social_share/models/post.dart';
 import 'package:deep_link_social_share/services/firebase_auth_service.dart';
@@ -11,10 +13,13 @@ class HomeScreen extends StatelessWidget {
   static const String routeName = '/HomeScreen';
   @override
   Widget build(BuildContext context) {
-    print('re-build');
+    print('HomeScreen | re-build');
     return Scaffold(
       appBar: AppBar(
+        title: const Text('Posts'),
+        centerTitle: true,
         leadingWidth: 50.0,
+        elevation: 0.0,
         leading: IconButton(
           onPressed: () {
             final auth =
@@ -44,14 +49,8 @@ class HomeScreen extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              onPressed: () async {
-                final fs =
-                    Provider.of<FirestoreService>(context, listen: false);
-                final Post? post = await fs.getPostById(
-                    docUID: 'ZoRc4q62wRTGsiL6CmYYt2x3NQX2');
-                print(post);
-              },
-              child: const Text('create post'),
+              onPressed: () => _createRandomPost(context),
+              child: const Text('add random post'),
             ),
           ],
         ),
@@ -59,16 +58,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _createRandomPost(String title, BuildContext context) async {
+  Future<void> _createRandomPost(BuildContext context) async {
     final user = Provider.of<MyUser>(context, listen: false);
-    final db = Provider.of<FirestoreService>(context, listen: false);
-    await db.createPost(
-      post: Post(
-        owner: user.uid,
-        title: title,
-        content: 'Random Content 2',
-        image: 'https://picsum.photos/200',
-      ),
+    Random rnd = Random();
+    int n = rnd.nextInt(100);
+    final fs = Provider.of<FirestoreService>(context, listen: false);
+    final Post post = Post(
+      title: 'Title Random $n',
+      owner: user.uid,
+      content: 'random content $n',
+      image: 'https://picsum.photos/200',
     );
+    await fs.createPost(post: post);
   }
 }

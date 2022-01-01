@@ -27,7 +27,7 @@ class PostCard extends StatelessWidget {
         onLongPress: () async {
           final ds = Provider.of<DynamicLinkService>(context, listen: false);
           final result = await ds.create(post: post);
-          print(result.queryParameters);
+          print('Resulting url: ' + result.queryParameters.toString());
           Share.share(result.toString());
         },
         leading: Image.network(post.image, width: 80.0),
@@ -53,7 +53,11 @@ class PostDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Post Details'),
+        centerTitle: true,
+        elevation: 0.0,
+      ),
       body: Card(
         margin: const EdgeInsets.all(20.0),
         elevation: 5.0,
